@@ -1,0 +1,228 @@
+<div class="animate-fade-in">
+    <!-- Page Header -->
+    <div class="mb-8">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+            <div>
+                <h1 class="text-3xl lg:text-4xl font-bold text-gray-900 mb-2">
+                    Dashboard <span class="gradient-text">Kantin Sekolah</span>
+                </h1>
+                <p class="text-gray-600">
+                    <i class="fas fa-chart-line text-primary mr-2"></i>
+                    Pantau performa dan kelola operasional kantin secara real-time
+                </p>
+            </div>
+            <div class="flex items-center space-x-3">
+                <div class="bg-white border border-gray-200 rounded-xl px-4 py-2">
+                    <i class="fas fa-calendar-alt text-gray-500 mr-2"></i>
+                    <span id="currentDate">Senin, 15 Desember 2025</span>
+                </div>
+                <button id="refreshBtn" class="bg-primary text-white p-3 rounded-xl hover:bg-primary-dark transition-colors">
+                    <i class="fas fa-sync-alt"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Role Tabs -->
+    <div class="mb-8">
+        <div class="bg-white rounded-xl shadow-sm p-1 inline-flex">
+            <button class="role-tab active px-6 py-3 rounded-lg font-medium bg-primary text-white">
+                <i class="fas fa-user-shield mr-2"></i>Admin
+            </button>
+            <button class="role-tab px-6 py-3 rounded-lg font-medium text-gray-600 hover:text-gray-900">
+                <i class="fas fa-cash-register mr-2"></i>Kasir
+            </button>
+            <button class="role-tab px-6 py-3 rounded-lg font-medium text-gray-600 hover:text-gray-900">
+                <i class="fas fa-users mr-2"></i>Pelanggan
+            </button>
+            <button class="role-tab px-6 py-3 rounded-lg font-medium text-gray-600 hover:text-gray-900">
+                <i class="fas fa-utensils mr-2"></i>Koki
+            </button>
+        </div>
+    </div>
+    
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <!-- Pendapatan -->
+        <div class="bg-gradient-to-br from-primary to-primary-dark text-white rounded-2xl p-6 card-hover">
+            <div class="flex items-start justify-between">
+                <div>
+                    <p class="text-sm opacity-90 mb-2">
+                        <i class="fas fa-money-bill-wave mr-2"></i>Pendapatan Bulan Ini
+                    </p>
+                    <h3 class="text-3xl font-bold" id="revenueAmount">Rp 12.5 Jt</h3>
+                    <div class="mt-4 flex items-center">
+                        <span class="text-sm bg-white bg-opacity-20 px-3 py-1 rounded-full">
+                            <i class="fas fa-arrow-up mr-1"></i>12.5%
+                        </span>
+                        <span class="text-sm ml-3 opacity-90">dari bulan lalu</span>
+                    </div>
+                </div>
+                <div class="bg-white bg-opacity-20 p-3 rounded-xl">
+                    <i class="fas fa-coins text-2xl"></i>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Pesanan -->
+        <div class="bg-white rounded-2xl p-6 shadow-sm card-hover">
+            <div class="flex items-start justify-between">
+                <div>
+                    <p class="text-sm text-gray-500 mb-2">
+                        <i class="fas fa-shopping-cart mr-2"></i>Pesanan Hari Ini
+                    </p>
+                    <h3 class="text-3xl font-bold text-gray-900" id="ordersCount">24</h3>
+                    <div class="mt-4 flex space-x-3">
+                        <span class="text-xs bg-green-100 text-green-600 px-3 py-1 rounded-full">
+                            <i class="fas fa-check mr-1"></i>18 selesai
+                        </span>
+                        <span class="text-xs bg-yellow-100 text-yellow-600 px-3 py-1 rounded-full">
+                            <i class="fas fa-clock mr-1"></i>4 diproses
+                        </span>
+                    </div>
+                </div>
+                <div class="bg-green-50 text-green-600 p-3 rounded-xl">
+                    <i class="fas fa-shopping-bag text-2xl"></i>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Pelanggan -->
+        <div class="bg-white rounded-2xl p-6 shadow-sm card-hover">
+            <div class="flex items-start justify-between">
+                <div>
+                    <p class="text-sm text-gray-500 mb-2">
+                        <i class="fas fa-users mr-2"></i>Total Pelanggan
+                    </p>
+                    <h3 class="text-3xl font-bold text-gray-900" id="customersCount">156</h3>
+                    <div class="mt-4 flex items-center">
+                        <span class="text-sm bg-blue-100 text-blue-600 px-3 py-1 rounded-full">
+                            <i class="fas fa-user-plus mr-1"></i>+5 baru
+                        </span>
+                        <span class="text-sm text-gray-500 ml-3">hari ini</span>
+                    </div>
+                </div>
+                <div class="bg-blue-50 text-blue-600 p-3 rounded-xl">
+                    <i class="fas fa-user-friends text-2xl"></i>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Menu -->
+        <div class="bg-white rounded-2xl p-6 shadow-sm card-hover">
+            <div class="flex items-start justify-between">
+                <div>
+                    <p class="text-sm text-gray-500 mb-2">
+                        <i class="fas fa-hamburger mr-2"></i>Menu Aktif
+                    </p>
+                    <h3 class="text-3xl font-bold text-gray-900" id="menuCount">38/42</h3>
+                    <div class="mt-4 flex items-center">
+                        <span class="text-sm bg-red-100 text-red-600 px-3 py-1 rounded-full">
+                            <i class="fas fa-fire mr-1"></i>45 terjual
+                        </span>
+                        <span class="text-sm text-gray-500 ml-3">teratas</span>
+                    </div>
+                </div>
+                <div class="bg-yellow-50 text-yellow-600 p-3 rounded-xl">
+                    <i class="fas fa-utensils text-2xl"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Charts Section -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+        <!-- Revenue Chart -->
+        <div class="lg:col-span-2">
+            <div class="bg-white rounded-2xl shadow-sm overflow-hidden card-hover">
+                <div class="p-6 border-b border-gray-100">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-900">Grafik Pendapatan 7 Hari</h3>
+                            <p class="text-gray-500 text-sm mt-1">Statistik pendapatan harian kantin</p>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <select id="chartFilter" class="bg-gray-50 border border-gray-200 rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary">
+                                <option value="7days">7 Hari Terakhir</option>
+                                <option value="30days">30 Hari Terakhir</option>
+                                <option value="month">Bulan Ini</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <div class="h-80">
+                        <canvas id="revenueChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Warung Distribution -->
+        <div>
+            <div class="bg-white rounded-2xl shadow-sm overflow-hidden h-full card-hover">
+                <div class="p-6 border-b border-gray-100">
+                    <h3 class="text-xl font-bold text-gray-900">Distribusi Warung</h3>
+                    <p class="text-gray-500 text-sm mt-1">Persentase pesanan per warung</p>
+                </div>
+                <div class="p-6">
+                    <div class="h-64 mb-6">
+                        <canvas id="warungChart"></canvas>
+                    </div>
+                    <div class="space-y-3" id="warungList">
+                        <!-- Warung items will be generated by JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Quick Actions -->
+    <div class="mb-8">
+        <div class="bg-white rounded-2xl shadow-sm overflow-hidden card-hover">
+            <div class="p-6">
+                <h3 class="text-xl font-bold text-gray-900 mb-6">Aksi Cepat</h3>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <button class="quick-action-btn bg-gradient-to-r from-primary to-primary-dark text-white p-6 rounded-xl hover:opacity-90 transition-all flex flex-col items-center justify-center">
+                        <i class="fas fa-plus-circle text-3xl mb-3"></i>
+                        <span class="font-bold">Tambah Menu</span>
+                        <span class="text-sm opacity-90 mt-1">Buat menu baru</span>
+                    </button>
+                    <button class="quick-action-btn bg-gradient-to-r from-green-500 to-green-600 text-white p-6 rounded-xl hover:opacity-90 transition-all flex flex-col items-center justify-center">
+                        <i class="fas fa-shopping-cart text-3xl mb-3"></i>
+                        <span class="font-bold">Kelola Pesanan</span>
+                        <span class="text-sm opacity-90 mt-1">Lihat semua pesanan</span>
+                    </button>
+                    <button class="quick-action-btn bg-gradient-to-r from-purple-500 to-purple-600 text-white p-6 rounded-xl hover:opacity-90 transition-all flex flex-col items-center justify-center">
+                        <i class="fas fa-chart-bar text-3xl mb-3"></i>
+                        <span class="font-bold">Laporan</span>
+                        <span class="text-sm opacity-90 mt-1">Generate laporan</span>
+                    </button>
+                    <button class="quick-action-btn bg-gradient-to-r from-yellow-500 to-yellow-600 text-white p-6 rounded-xl hover:opacity-90 transition-all flex flex-col items-center justify-center">
+                        <i class="fas fa-users-cog text-3xl mb-3"></i>
+                        <span class="font-bold">Pengguna</span>
+                        <span class="text-sm opacity-90 mt-1">Kelola pengguna</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Recent Orders -->
+    <div class="bg-white rounded-2xl shadow-sm overflow-hidden card-hover">
+        <div class="p-6 border-b border-gray-100 flex justify-between items-center">
+            <div>
+                <h3 class="text-xl font-bold text-gray-900">Pesanan Terbaru</h3>
+                <p class="text-gray-500 text-sm mt-1">5 pesanan terakhir masuk</p>
+            </div>
+            <a href="#pesanan" class="text-primary hover:text-primary-dark font-medium flex items-center">
+                Lihat Semua <i class="fas fa-arrow-right ml-2"></i>
+            </a>
+        </div>
+        <div class="p-6">
+            <div class="space-y-4" id="recentOrders">
+                <!-- Recent orders will be generated by JS -->
+            </div>
+        </div>
+    </div>
+</div>

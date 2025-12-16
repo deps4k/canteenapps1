@@ -1,0 +1,272 @@
+<div class="animate-fade-in">
+    <!-- Page Header -->
+    <div class="mb-8">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+            <div>
+                <h1 class="text-3xl lg:text-4xl font-bold text-gray-900 mb-2">
+                    <span class="gradient-text">Struk Pembayaran</span>
+                </h1>
+                <p class="text-gray-600">
+                    <i class="fas fa-receipt text-primary mr-2"></i>
+                    Detail dan cetak struk pembayaran pesanan
+                </p>
+            </div>
+            <div class="flex items-center space-x-3">
+                <button onclick="window.print()" class="bg-primary text-white px-6 py-3 rounded-xl font-medium hover:bg-primary-dark flex items-center">
+                    <i class="fas fa-print mr-2"></i> Cetak Struk
+                </button>
+                <button class="border border-primary text-primary px-6 py-3 rounded-xl font-medium hover:bg-primary hover:text-white flex items-center">
+                    <i class="fas fa-download mr-2"></i> Download PDF
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Receipt Container -->
+    <div class="max-w-2xl mx-auto">
+        <!-- Receipt Card -->
+        <div class="bg-white rounded-2xl shadow-xl overflow-hidden">
+            <!-- Receipt Header -->
+            <div class="bg-gradient-to-r from-primary to-accent p-8 text-center text-white">
+                <div class="flex justify-center mb-4">
+                    <img src="assets/Ca.jpg" alt="Logo CanteenApps" class="w-16 h-16 rounded-xl border-4 border-white/20">
+                </div>
+                <h2 class="text-2xl font-bold">CANTEENAPPS</h2>
+                <p class="opacity-90">Sistem Kantin Digital Sekolah</p>
+                <p class="text-sm mt-2">SMK Negeri 1 Digital</p>
+            </div>
+            
+            <!-- Receipt Info -->
+            <div class="p-8 border-b border-gray-200">
+                <div class="grid grid-cols-2 gap-6 mb-6">
+                    <div>
+                        <p class="text-sm text-gray-500 mb-1">No. Transaksi</p>
+                        <p class="font-bold text-lg">#ORD-0012</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-sm text-gray-500 mb-1">Tanggal</p>
+                        <p class="font-bold">15 Des 2025, 10:30 WIB</p>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-6">
+                    <div>
+                        <p class="text-sm text-gray-500 mb-1">Kasir</p>
+                        <div class="flex items-center">
+                            <div class="w-8 h-8 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-bold mr-2">
+                                A
+                            </div>
+                            <p class="font-medium">Admin Kantin</p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-sm text-gray-500 mb-1">Status</p>
+                        <span class="px-3 py-1 bg-green-100 text-green-600 rounded-full text-sm font-medium">
+                            LUNAS
+                        </span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Customer Info -->
+            <div class="p-8 border-b border-gray-200">
+                <h3 class="font-bold text-lg mb-4">Informasi Pelanggan</h3>
+                <div class="grid grid-cols-2 gap-6">
+                    <div>
+                        <p class="text-sm text-gray-500 mb-1">Nama</p>
+                        <p class="font-medium">Budi Santoso</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-500 mb-1">Kelas</p>
+                        <p class="font-medium">X IPA 1</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-500 mb-1">No. Induk</p>
+                        <p class="font-medium">20250012</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-500 mb-1">Metode Bayar</p>
+                        <p class="font-medium">Tunai</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Order Items -->
+            <div class="p-8 border-b border-gray-200">
+                <h3 class="font-bold text-lg mb-4">Detail Pesanan</h3>
+                <div class="space-y-4">
+                    <!-- Item 1 -->
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                            <img src="https://images.unsplash.com/photo-1565958011703-44f9829ba187?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80" 
+                                 alt="Nasi Goreng" 
+                                 class="w-12 h-12 rounded-lg object-cover mr-4">
+                            <div>
+                                <p class="font-medium">Nasi Goreng Spesial</p>
+                                <p class="text-sm text-gray-500">Kantin Utama</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <p class="font-medium">2 x Rp 15.000</p>
+                            <p class="text-lg font-bold">Rp 30.000</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Item 2 -->
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                            <img src="https://images.unsplash.com/photo-1572490122747-3968b75cc699?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80" 
+                                 alt="Es Teh" 
+                                 class="w-12 h-12 rounded-lg object-cover mr-4">
+                            <div>
+                                <p class="font-medium">Es Teh Manis</p>
+                                <p class="text-sm text-gray-500">Kantin Minuman</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <p class="font-medium">1 x Rp 5.000</p>
+                            <p class="text-lg font-bold">Rp 5.000</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Item 3 -->
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                            <div class="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center mr-4">
+                                <i class="fas fa-cookie-bite text-gray-400"></i>
+                            </div>
+                            <div>
+                                <p class="font-medium">Keripik Kentang</p>
+                                <p class="text-sm text-gray-500">Kantin Snack</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <p class="font-medium">1 x Rp 8.000</p>
+                            <p class="text-lg font-bold">Rp 8.000</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Payment Summary -->
+            <div class="p-8">
+                <div class="space-y-3">
+                    <div class="flex justify-between">
+                        <p class="text-gray-600">Subtotal</p>
+                        <p class="font-medium">Rp 43.000</p>
+                    </div>
+                    <div class="flex justify-between">
+                        <p class="text-gray-600">Pajak (10%)</p>
+                        <p class="font-medium">Rp 4.300</p>
+                    </div>
+                    <div class="flex justify-between border-t border-gray-200 pt-3">
+                        <p class="text-gray-600">Total</p>
+                        <p class="text-2xl font-bold text-primary">Rp 47.300</p>
+                    </div>
+                    <div class="flex justify-between">
+                        <p class="text-gray-600">Tunai</p>
+                        <p class="font-medium">Rp 50.000</p>
+                    </div>
+                    <div class="flex justify-between border-t border-gray-200 pt-3">
+                        <p class="text-gray-600">Kembalian</p>
+                        <p class="text-xl font-bold text-green-600">Rp 2.700</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Receipt Footer -->
+            <div class="bg-gray-50 p-8 text-center">
+                <div class="mb-4">
+                    <p class="text-sm text-gray-600 mb-2">TERIMA KASIH</p>
+                    <p class="text-gray-500 text-sm">Pesanan Anda telah berhasil diproses</p>
+                </div>
+                <div class="border-t border-gray-300 pt-4">
+                    <p class="text-xs text-gray-500">Simpan struk ini sebagai bukti pembayaran</p>
+                    <p class="text-xs text-gray-500 mt-1">CanteenApps v4.0 - SMK Negeri 1 Digital</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Action Buttons -->
+        <div class="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
+            <button class="bg-white border border-primary text-primary px-8 py-3 rounded-xl font-medium hover:bg-primary hover:text-white flex items-center justify-center">
+                <i class="fas fa-share-alt mr-2"></i> Bagikan Struk
+            </button>
+            <button class="bg-white border border-green-500 text-green-500 px-8 py-3 rounded-xl font-medium hover:bg-green-500 hover:text-white flex items-center justify-center">
+                <i class="fas fa-redo mr-2"></i> Pesan Lagi
+            </button>
+            <a href="#pesanan" class="bg-white border border-gray-300 text-gray-700 px-8 py-3 rounded-xl font-medium hover:bg-gray-50 flex items-center justify-center">
+                <i class="fas fa-arrow-left mr-2"></i> Kembali
+            </a>
+        </div>
+        
+        <!-- Recent Receipts -->
+        <div class="mt-12">
+            <h3 class="text-xl font-bold text-gray-900 mb-6">Struk Terbaru</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="bg-white rounded-xl shadow-sm p-4 hover:shadow-md transition-shadow">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="font-bold text-primary">#ORD-0011</span>
+                        <span class="text-sm text-gray-500">14 Des 2025</span>
+                    </div>
+                    <p class="font-medium mb-2">Sari Dewi - XII IPS 2</p>
+                    <div class="flex items-center justify-between">
+                        <span class="text-green-600 font-bold">Rp 5.000</span>
+                        <a href="#struk?order=ORD-0011" class="text-primary hover:text-primary-dark">
+                            <i class="fas fa-eye"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow-sm p-4 hover:shadow-md transition-shadow">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="font-bold text-primary">#ORD-0010</span>
+                        <span class="text-sm text-gray-500">14 Des 2025</span>
+                    </div>
+                    <p class="font-medium mb-2">Ahmad Rizki - XI IPA 3</p>
+                    <div class="flex items-center justify-between">
+                        <span class="text-green-600 font-bold">Rp 12.000</span>
+                        <a href="#struk?order=ORD-0010" class="text-primary hover:text-primary-dark">
+                            <i class="fas fa-eye"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow-sm p-4 hover:shadow-md transition-shadow">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="font-bold text-primary">#ORD-0009</span>
+                        <span class="text-sm text-gray-500">13 Des 2025</span>
+                    </div>
+                    <p class="font-medium mb-2">Rina Melati - X IPS 1</p>
+                    <div class="flex items-center justify-between">
+                        <span class="text-green-600 font-bold">Rp 8.000</span>
+                        <a href="#struk?order=ORD-0009" class="text-primary hover:text-primary-dark">
+                            <i class="fas fa-eye"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Print Styles -->
+<style media="print">
+    @media print {
+        body * {
+            visibility: hidden;
+        }
+        #strukPage, #strukPage * {
+            visibility: visible;
+        }
+        #strukPage {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+        }
+        .no-print {
+            display: none !important;
+        }
+    }
+</style>
