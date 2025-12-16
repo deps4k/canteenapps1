@@ -64,15 +64,20 @@ window.Utils = {
 
     // Load HTML content
     loadHTML: async function(elementId, url) {
-        try {
-            const element = document.getElementById(elementId);
-            if (!element) return;
+    try {
+        const element = document.getElementById(elementId);
+        if (!element) return;
 
-            const response = await fetch(url);
-            const html = await response.text();
-            element.innerHTML = html;
-        } catch (error) {
-            console.error(`Error loading ${url}:`, error);
+        const response = await fetch(url);
+        if (!response.ok) {
+            console.warn(`Skip load: ${url}`);
+            return; // ⬅️ PENTING
         }
+
+        const html = await response.text();
+        element.innerHTML = html;
+    } catch (error) {
+        console.error(`Error loading ${url}:`, error);
     }
+}
 };
