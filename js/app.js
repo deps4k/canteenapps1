@@ -42,8 +42,7 @@ class CanteenApp {
             // Load initial data
             this.loadDashboardData();
             
-            console.log('loadingScreen:', document.getElementById('loadingScreen'));
-console.log('appContainer:', document.getElementById('appContainer'));
+           
 
             // Hide loading screen
             setTimeout(() => {
