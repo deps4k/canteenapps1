@@ -1,0 +1,1418 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CanteenApps - Dashboard Kantin Sekolah</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a56d4;
+            --secondary: #3f37c9;
+            --success: #4cc9f0;
+            --warning: #f72585;
+            --info: #4895ef;
+            --light: #f8f9fa;
+            --dark: #212529;
+        }
+        
+        * {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+        
+        .sidebar {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .gradient-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+        }
+        
+        .gradient-success {
+            background: linear-gradient(135deg, #4cc9f0 0%, #4361ee 100%);
+        }
+        
+        .gradient-warning {
+            background: linear-gradient(135deg, #f72585 0%, #7209b7 100%);
+        }
+        
+        .gradient-info {
+            background: linear-gradient(135deg, #4895ef 0%, #4cc9f0 100%);
+        }
+        
+        /* Custom animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .animate-fade-in-up {
+            animation: fadeInUp 0.5s ease-out forwards;
+        }
+        
+        .animation-delay-100 { animation-delay: 0.1s; }
+        .animation-delay-200 { animation-delay: 0.2s; }
+        .animation-delay-300 { animation-delay: 0.3s; }
+        .animation-delay-400 { animation-delay: 0.4s; }
+        
+        /* Custom scrollbar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 10px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #a1a1a1;
+        }
+        
+        /* Loading animation */
+        .loading-spinner {
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Pulse animation for notifications */
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .pulse-notification {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        
+        /* Shimmer effect for loading */
+        .shimmer {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+    <!-- Navigation Bar -->
+    <nav class="fixed top-0 left-0 right-0 bg-white shadow-lg z-50">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex items-center justify-between">
+                <!-- Logo -->
+                <div class="flex items-center space-x-3">
+                    <div class="gradient-primary w-10 h-10 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-utensils text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-bold text-gray-900">Canteen<span class="text-[#f72585]">Apps</span></h1>
+                        <p class="text-xs text-gray-500">Sistem Kantin Digital Sekolah</p>
+                    </div>
+                </div>
+                
+                <!-- User Info & Controls -->
+                <div class="flex items-center space-x-4">
+                    <!-- Notifications -->
+                    <div class="relative">
+                        <button id="notificationBtn" class="relative p-2 rounded-full hover:bg-gray-100 transition-colors">
+                            <i class="fas fa-bell text-gray-600 text-xl"></i>
+                            <span id="notificationCount" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold pulse-notification">3</span>
+                        </button>
+                        
+                        <!-- Notification Dropdown -->
+                        <div id="notificationDropdown" class="absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-xl border border-gray-200 hidden z-50">
+                            <div class="p-4 border-b">
+                                <h3 class="font-bold text-gray-800">Notifikasi</h3>
+                            </div>
+                            <div class="max-h-96 overflow-y-auto">
+                                <div class="p-3 border-b hover:bg-gray-50 cursor-pointer">
+                                    <div class="flex items-start space-x-3">
+                                        <div class="bg-blue-100 text-blue-600 p-2 rounded-lg">
+                                            <i class="fas fa-shopping-cart"></i>
+                                        </div>
+                                        <div class="flex-1">
+                                            <p class="font-medium text-sm">Pesanan #0012 selesai diproses</p>
+                                            <p class="text-xs text-gray-500">2 menit yang lalu</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="p-3 border-b hover:bg-gray-50 cursor-pointer">
+                                    <div class="flex items-start space-x-3">
+                                        <div class="bg-yellow-100 text-yellow-600 p-2 rounded-lg">
+                                            <i class="fas fa-exclamation-triangle"></i>
+                                        </div>
+                                        <div class="flex-1">
+                                            <p class="font-medium text-sm">Stok Nasi Goreng hampir habis</p>
+                                            <p class="text-xs text-gray-500">1 jam yang lalu</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="p-3 hover:bg-gray-50 cursor-pointer">
+                                    <div class="flex items-start space-x-3">
+                                        <div class="bg-green-100 text-green-600 p-2 rounded-lg">
+                                            <i class="fas fa-chart-line"></i>
+                                        </div>
+                                        <div class="flex-1">
+                                            <p class="font-medium text-sm">Pendapatan hari ini +15%</p>
+                                            <p class="text-xs text-gray-500">3 jam yang lalu</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="p-3 border-t text-center">
+                                <button class="text-sm text-blue-600 font-medium hover:text-blue-800">Lihat Semua</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- User Profile -->
+                    <div class="relative">
+                        <button id="userMenuBtn" class="flex items-center space-x-3 p-2 rounded-xl hover:bg-gray-100 transition-colors">
+                            <div class="gradient-primary w-9 h-9 rounded-full flex items-center justify-center font-bold text-white">
+                                <span id="userInitial">A</span>
+                            </div>
+                            <div class="text-left hidden md:block">
+                                <p class="font-medium text-sm" id="userName">Admin Kantin</p>
+                                <p class="text-xs text-gray-500" id="userRole">Administrator</p>
+                            </div>
+                            <i class="fas fa-chevron-down text-gray-400 text-sm"></i>
+                        </button>
+                        
+                        <!-- User Dropdown -->
+                        <div id="userDropdown" class="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-xl border border-gray-200 hidden z-50">
+                            <div class="p-4 border-b">
+                                <p class="font-bold text-gray-800" id="dropdownUserName">Admin Kantin</p>
+                                <p class="text-sm text-gray-500" id="dropdownUserRole">Administrator</p>
+                            </div>
+                            <div class="p-2">
+                                <button class="w-full text-left p-3 rounded-lg hover:bg-gray-50 transition-colors flex items-center space-x-3">
+                                    <i class="fas fa-user text-gray-500 w-5"></i>
+                                    <span>Profil Saya</span>
+                                </button>
+                                <button class="w-full text-left p-3 rounded-lg hover:bg-gray-50 transition-colors flex items-center space-x-3">
+                                    <i class="fas fa-cog text-gray-500 w-5"></i>
+                                    <span>Pengaturan</span>
+                                </button>
+                                <button class="w-full text-left p-3 rounded-lg hover:bg-gray-50 transition-colors flex items-center space-x-3">
+                                    <i class="fas fa-question-circle text-gray-500 w-5"></i>
+                                    <span>Bantuan</span>
+                                </button>
+                            </div>
+                            <div class="p-3 border-t">
+                                <button id="logoutBtn" class="w-full p-3 bg-red-50 text-red-600 rounded-lg font-medium hover:bg-red-100 transition-colors flex items-center justify-center space-x-2">
+                                    <i class="fas fa-sign-out-alt"></i>
+                                    <span>Keluar</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container mx-auto px-4 pt-24 pb-12">
+        <!-- Page Header -->
+        <div class="mb-8 animate-fade-in-up">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
+                        Dashboard <span class="gradient-primary bg-clip-text text-transparent">Kantin Sekolah</span>
+                    </h2>
+                    <p class="text-gray-600">
+                        <i class="fas fa-chart-line text-blue-500 mr-2"></i>
+                        Pantau performa dan kelola operasional kantin secara real-time
+                    </p>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <div class="bg-white border border-gray-200 rounded-xl px-4 py-2">
+                        <i class="fas fa-calendar-alt text-gray-500 mr-2"></i>
+                        <span id="currentDate">Senin, 15 Desember 2025</span>
+                    </div>
+                    <button id="refreshBtn" class="gradient-primary text-white p-3 rounded-xl hover:opacity-90 transition-opacity">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Role Tabs -->
+        <div class="mb-8 animate-fade-in-up animation-delay-100">
+            <div class="bg-white rounded-xl shadow-sm p-1 inline-flex">
+                <button id="tabAdmin" class="role-tab px-6 py-3 rounded-lg font-medium transition-colors active" data-role="admin">
+                    <i class="fas fa-user-shield mr-2"></i>Admin
+                </button>
+                <button id="tabKasir" class="role-tab px-6 py-3 rounded-lg font-medium transition-colors" data-role="kasir">
+                    <i class="fas fa-cash-register mr-2"></i>Kasir
+                </button>
+                <button id="tabPelanggan" class="role-tab px-6 py-3 rounded-lg font-medium transition-colors" data-role="pelanggan">
+                    <i class="fas fa-users mr-2"></i>Pelanggan
+                </button>
+                <button id="tabKoki" class="role-tab px-6 py-3 rounded-lg font-medium transition-colors" data-role="koki">
+                    <i class="fas fa-utensils mr-2"></i>Koki
+                </button>
+            </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <!-- Card 1: Pendapatan -->
+            <div class="stat-card rounded-2xl p-6 text-white card-hover animate-fade-in-up animation-delay-100">
+                <div class="flex items-start justify-between">
+                    <div>
+                        <p class="text-sm opacity-90 mb-2">
+                            <i class="fas fa-money-bill-wave mr-2"></i>Pendapatan Bulan Ini
+                        </p>
+                        <h3 class="text-3xl font-bold" id="revenueAmount">Rp 12.5 Jt</h3>
+                        <div class="mt-4 flex items-center">
+                            <span class="text-sm bg-white bg-opacity-20 px-3 py-1 rounded-full">
+                                <i class="fas fa-arrow-up mr-1"></i>12.5%
+                            </span>
+                            <span class="text-sm ml-3 opacity-90">dari bulan lalu</span>
+                        </div>
+                    </div>
+                    <div class="bg-white bg-opacity-20 p-3 rounded-xl">
+                        <i class="fas fa-coins text-2xl"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Card 2: Pesanan -->
+            <div class="bg-white rounded-2xl p-6 shadow-sm card-hover animate-fade-in-up animation-delay-200">
+                <div class="flex items-start justify-between">
+                    <div>
+                        <p class="text-sm text-gray-500 mb-2">
+                            <i class="fas fa-shopping-cart mr-2"></i>Pesanan Hari Ini
+                        </p>
+                        <h3 class="text-3xl font-bold text-gray-900" id="ordersCount">24</h3>
+                        <div class="mt-4 flex space-x-3">
+                            <span class="text-xs bg-green-100 text-green-600 px-3 py-1 rounded-full">
+                                <i class="fas fa-check mr-1"></i>18 selesai
+                            </span>
+                            <span class="text-xs bg-yellow-100 text-yellow-600 px-3 py-1 rounded-full">
+                                <i class="fas fa-clock mr-1"></i>4 diproses
+                            </span>
+                        </div>
+                    </div>
+                    <div class="bg-green-50 text-green-600 p-3 rounded-xl">
+                        <i class="fas fa-shopping-bag text-2xl"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Card 3: Pelanggan -->
+            <div class="bg-white rounded-2xl p-6 shadow-sm card-hover animate-fade-in-up animation-delay-300">
+                <div class="flex items-start justify-between">
+                    <div>
+                        <p class="text-sm text-gray-500 mb-2">
+                            <i class="fas fa-users mr-2"></i>Total Pelanggan
+                        </p>
+                        <h3 class="text-3xl font-bold text-gray-900" id="customersCount">156</h3>
+                        <div class="mt-4 flex items-center">
+                            <span class="text-sm bg-blue-100 text-blue-600 px-3 py-1 rounded-full">
+                                <i class="fas fa-user-plus mr-1"></i>+5 baru
+                            </span>
+                            <span class="text-sm text-gray-500 ml-3">hari ini</span>
+                        </div>
+                    </div>
+                    <div class="bg-blue-50 text-blue-600 p-3 rounded-xl">
+                        <i class="fas fa-user-friends text-2xl"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Card 4: Menu -->
+            <div class="bg-white rounded-2xl p-6 shadow-sm card-hover animate-fade-in-up animation-delay-400">
+                <div class="flex items-start justify-between">
+                    <div>
+                        <p class="text-sm text-gray-500 mb-2">
+                            <i class="fas fa-hamburger mr-2"></i>Menu Aktif
+                        </p>
+                        <h3 class="text-3xl font-bold text-gray-900" id="menuCount">38/42</h3>
+                        <div class="mt-4 flex items-center">
+                            <span class="text-sm bg-red-100 text-red-600 px-3 py-1 rounded-full">
+                                <i class="fas fa-fire mr-1"></i>45 terjual
+                            </span>
+                            <span class="text-sm text-gray-500 ml-3">teratas</span>
+                        </div>
+                    </div>
+                    <div class="bg-yellow-50 text-yellow-600 p-3 rounded-xl">
+                        <i class="fas fa-utensils text-2xl"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Section -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+            <!-- Revenue Chart -->
+            <div class="lg:col-span-2">
+                <div class="bg-white rounded-2xl shadow-sm overflow-hidden card-hover">
+                    <div class="p-6 border-b border-gray-100">
+                        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                            <div>
+                                <h3 class="text-xl font-bold text-gray-900">Grafik Pendapatan 7 Hari</h3>
+                                <p class="text-gray-500 text-sm mt-1">Statistik pendapatan harian kantin</p>
+                            </div>
+                            <div class="flex items-center space-x-3">
+                                <select id="chartFilter" class="bg-gray-50 border border-gray-200 rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <option value="7days">7 Hari Terakhir</option>
+                                    <option value="30days">30 Hari Terakhir</option>
+                                    <option value="month">Bulan Ini</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="h-80">
+                            <canvas id="revenueChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Warung Distribution -->
+            <div>
+                <div class="bg-white rounded-2xl shadow-sm overflow-hidden h-full card-hover">
+                    <div class="p-6 border-b border-gray-100">
+                        <h3 class="text-xl font-bold text-gray-900">Distribusi Warung</h3>
+                        <p class="text-gray-500 text-sm mt-1">Persentase pesanan per warung (30 hari)</p>
+                    </div>
+                    <div class="p-6">
+                        <div class="h-64 mb-6">
+                            <canvas id="warungChart"></canvas>
+                        </div>
+                        <div class="space-y-4" id="warungList">
+                            <!-- Warung items will be generated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="mb-8">
+            <div class="bg-white rounded-2xl shadow-sm overflow-hidden card-hover">
+                <div class="p-6">
+                    <h3 class="text-xl font-bold text-gray-900 mb-6">Aksi Cepat</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <button class="quick-action-btn bg-gradient-to-r from-blue-500 to-blue-600 text-white p-6 rounded-xl hover:opacity-90 transition-all transform hover:-translate-y-1 flex flex-col items-center justify-center">
+                            <i class="fas fa-plus-circle text-3xl mb-3"></i>
+                            <span class="font-bold">Tambah Menu</span>
+                            <span class="text-sm opacity-90 mt-1">Buat menu baru</span>
+                        </button>
+                        <button class="quick-action-btn bg-gradient-to-r from-green-500 to-green-600 text-white p-6 rounded-xl hover:opacity-90 transition-all transform hover:-translate-y-1 flex flex-col items-center justify-center">
+                            <i class="fas fa-shopping-cart text-3xl mb-3"></i>
+                            <span class="font-bold">Kelola Pesanan</span>
+                            <span class="text-sm opacity-90 mt-1">Lihat semua pesanan</span>
+                        </button>
+                        <button class="quick-action-btn bg-gradient-to-r from-purple-500 to-purple-600 text-white p-6 rounded-xl hover:opacity-90 transition-all transform hover:-translate-y-1 flex flex-col items-center justify-center">
+                            <i class="fas fa-chart-bar text-3xl mb-3"></i>
+                            <span class="font-bold">Laporan</span>
+                            <span class="text-sm opacity-90 mt-1">Generate laporan</span>
+                        </button>
+                        <button class="quick-action-btn bg-gradient-to-r from-yellow-500 to-yellow-600 text-white p-6 rounded-xl hover:opacity-90 transition-all transform hover:-translate-y-1 flex flex-col items-center justify-center">
+                            <i class="fas fa-users-cog text-3xl mb-3"></i>
+                            <span class="font-bold">Pengguna</span>
+                            <span class="text-sm opacity-90 mt-1">Kelola pengguna</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tables Section -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <!-- Recent Orders -->
+            <div>
+                <div class="bg-white rounded-2xl shadow-sm overflow-hidden card-hover h-full">
+                    <div class="p-6 border-b border-gray-100 flex justify-between items-center">
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-900">Pesanan Terbaru</h3>
+                            <p class="text-gray-500 text-sm mt-1">10 pesanan terakhir masuk</p>
+                        </div>
+                        <button class="text-blue-600 hover:text-blue-800 font-medium flex items-center">
+                            Lihat Semua <i class="fas fa-arrow-right ml-2"></i>
+                        </button>
+                    </div>
+                    <div class="p-6">
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead>
+                                    <tr class="text-left text-gray-500 text-sm border-b">
+                                        <th class="pb-3">#ID</th>
+                                        <th class="pb-3">Pelanggan</th>
+                                        <th class="pb-3">Menu</th>
+                                        <th class="pb-3">Status</th>
+                                        <th class="pb-3 text-right">Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="recentOrdersTable">
+                                    <!-- Orders will be generated by JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Low Stock & Top Selling -->
+            <div class="space-y-6">
+                <!-- Low Stock -->
+                <div class="bg-white rounded-2xl shadow-sm overflow-hidden card-hover">
+                    <div class="p-6 border-b border-gray-100 flex justify-between items-center">
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-900">
+                                <i class="fas fa-exclamation-triangle text-yellow-500 mr-2"></i>
+                                Stok Hampir Habis
+                            </h3>
+                            <p class="text-gray-500 text-sm mt-1">Menu dengan stok kurang dari 5</p>
+                        </div>
+                        <button class="bg-yellow-100 text-yellow-600 px-4 py-2 rounded-lg font-medium hover:bg-yellow-200">
+                            Tambah Stok
+                        </button>
+                    </div>
+                    <div class="p-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="lowStockItems">
+                            <!-- Low stock items will be generated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Top Selling -->
+                <div class="bg-white rounded-2xl shadow-sm overflow-hidden card-hover">
+                    <div class="p-6 border-b border-gray-100">
+                        <h3 class="text-xl font-bold text-gray-900">
+                            <i class="fas fa-trophy text-green-500 mr-2"></i>
+                            Menu Terlaris
+                        </h3>
+                    </div>
+                    <div class="p-6">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="topSellingItems">
+                            <!-- Top selling items will be generated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modals -->
+        
+        <!-- Login Modal -->
+        <div id="loginModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+            <div class="bg-white rounded-2xl p-8 w-full max-w-md mx-4">
+                <div class="text-center mb-8">
+                    <div class="gradient-primary w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-utensils text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900">Masuk ke CanteenApps</h3>
+                    <p class="text-gray-500 mt-2">Sistem Kantin Digital Sekolah</p>
+                </div>
+                
+                <form id="loginForm">
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Username / Email</label>
+                            <input type="text" id="loginUsername" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Masukkan username atau email" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                            <input type="password" id="loginPassword" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Masukkan password" required>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="checkbox" id="rememberMe" class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                            <label for="rememberMe" class="ml-2 text-sm text-gray-700">Ingat saya</label>
+                        </div>
+                        <button type="submit" class="w-full gradient-primary text-white py-3 rounded-xl font-bold hover:opacity-90 transition-opacity">
+                            <i class="fas fa-sign-in-alt mr-2"></i>MASUK
+                        </button>
+                    </div>
+                </form>
+                
+                <div class="text-center mt-6">
+                    <p class="text-gray-600">Belum punya akun? <button id="showRegister" class="text-blue-600 font-medium hover:text-blue-800">Daftar di sini</button></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Report Modal -->
+        <div id="reportModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+            <div class="bg-white rounded-2xl w-full max-w-2xl mx-4">
+                <div class="p-6 border-b border-gray-100 flex justify-between items-center">
+                    <h3 class="text-xl font-bold text-gray-900">Generate Laporan Kantin</h3>
+                    <button id="closeReportModal" class="text-gray-400 hover:text-gray-600">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                
+                <div class="p-6">
+                    <form id="reportForm">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Periode Laporan</label>
+                                <div class="flex items-center border border-gray-300 rounded-xl overflow-hidden">
+                                    <span class="px-4 text-gray-500">
+                                        <i class="fas fa-calendar"></i>
+                                    </span>
+                                    <input type="date" class="flex-1 px-3 py-3 focus:outline-none" value="2025-12-15">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Jenis Laporan</label>
+                                <select class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <option value="pendapatan">📊 Laporan Pendapatan</option>
+                                    <option value="penjualan">🛒 Laporan Penjualan</option>
+                                    <option value="menu">🍽️ Laporan Menu</option>
+                                    <option value="pelanggan">👥 Laporan Pelanggan</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Format Export</label>
+                                <div class="flex space-x-2">
+                                    <button type="button" class="flex-1 border border-blue-500 text-blue-500 px-4 py-3 rounded-lg font-medium hover:bg-blue-50 active">PDF</button>
+                                    <button type="button" class="flex-1 border border-green-500 text-green-500 px-4 py-3 rounded-lg font-medium hover:bg-green-50">Excel</button>
+                                    <button type="button" class="flex-1 border border-purple-500 text-purple-500 px-4 py-3 rounded-lg font-medium hover:bg-purple-50">Print</button>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Detail Laporan</label>
+                                <div class="space-y-2">
+                                    <label class="flex items-center">
+                                        <input type="checkbox" checked class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                                        <span class="ml-2 text-sm text-gray-700">Termasuk Grafik</span>
+                                    </label>
+                                    <label class="flex items-center">
+                                        <input type="checkbox" checked class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                                        <span class="ml-2 text-sm text-gray-700">Termasuk Ringkasan</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                
+                <div class="p-6 border-t border-gray-100 flex justify-end space-x-4">
+                    <button id="cancelReport" class="px-6 py-3 border border-gray-300 text-gray-700 rounded-xl font-medium hover:bg-gray-50">
+                        Batal
+                    </button>
+                    <button id="generateReport" class="gradient-primary text-white px-6 py-3 rounded-xl font-medium hover:opacity-90 flex items-center">
+                        <i class="fas fa-download mr-2"></i> Generate Laporan
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Alert Toast -->
+        <div id="toast" class="fixed bottom-4 right-4 bg-green-500 text-white px-6 py-3 rounded-xl shadow-lg transform translate-y-10 opacity-0 transition-all duration-300 z-50">
+            <div class="flex items-center">
+                <i class="fas fa-check-circle mr-3"></i>
+                <span id="toastMessage">Operasi berhasil diselesaikan!</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-8 mt-12">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-6 md:mb-0">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div class="gradient-primary w-10 h-10 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-utensils text-white text-xl"></i>
+                        </div>
+                        <h2 class="text-2xl font-bold">Canteen<span class="text-pink-500">Apps</span></h2>
+                    </div>
+                    <p class="text-gray-400">Sistem Manajemen Kantin Sekolah Digital</p>
+                </div>
+                
+                <div class="text-center md:text-right">
+                    <p class="text-gray-400 mb-2">
+                        <i class="fas fa-code mr-2"></i> Dibangun dengan ❤️ untuk pendidikan
+                    </p>
+                    <p class="text-gray-400 text-sm">
+                        &copy; 2025 CanteenApps v4.0 - All rights reserved
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript Application -->
+    <script>
+        // ====================
+        // GLOBAL STATE & DATA
+        // ====================
+        const AppState = {
+            currentUser: {
+                id: 1,
+                name: "Admin Kantin",
+                username: "admin",
+                role: "admin",
+                email: "admin@canteen.app",
+                phone: "081234567890",
+                kelas: null,
+                saldo: 0,
+                poin: 0,
+                isActive: true,
+                lastLogin: new Date()
+            },
+            
+            // Sample data for charts and tables
+            dashboardData: {
+                revenue: {
+                    labels: ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'],
+                    data: [1200000, 1900000, 1500000, 2200000, 1800000, 2500000, 2100000]
+                },
+                
+                warungDistribution: {
+                    labels: ['Kantin Utama', 'Kantin Minuman', 'Kantin Snack', 'Kantin Bakso', 'Kantin Soto', 'Kantin Mie'],
+                    data: [35, 25, 15, 10, 8, 7],
+                    colors: ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b', '#858796']
+                },
+                
+                recentOrders: [
+                    { id: '0012', customer: 'Budi Santoso', menu: 'Nasi Goreng Spesial', status: 'selesai', total: 15000, time: '2 menit lalu' },
+                    { id: '0011', customer: 'Sari Dewi', menu: 'Es Teh Manis', status: 'diproses', total: 6000, time: '15 menit lalu' },
+                    { id: '0010', customer: 'Ahmad Rizki', menu: 'Mie Goreng Jawa', status: 'selesai', total: 24000, time: '30 menit lalu' },
+                    { id: '0009', customer: 'Rina Melati', menu: 'Roti Bakar', status: 'pending', total: 8000, time: '1 jam lalu' },
+                    { id: '0008', customer: 'Doni Pratama', menu: 'Bakso Biasa', status: 'selesai', total: 10000, time: '2 jam lalu' }
+                ],
+                
+                lowStockItems: [
+                    { name: 'Nasi Goreng Spesial', warung: 'Kantin Utama', stock: 3 },
+                    { name: 'Es Jeruk', warung: 'Kantin Minuman', stock: 2 },
+                    { name: 'Kentang Goreng', warung: 'Kantin Snack', stock: 4 },
+                    { name: 'Bakso Mercon', warung: 'Kantin Bakso', stock: 1 }
+                ],
+                
+                topSellingItems: [
+                    { name: 'Nasi Goreng Spesial', warung: 'Kantin Utama', sold: 45 },
+                    { name: 'Es Teh Manis', warung: 'Kantin Minuman', sold: 38 },
+                    { name: 'Mie Ayam', warung: 'Kantin Mie', sold: 32 }
+                ],
+                
+                warungStats: [
+                    { label: 'Kantin Utama', count: 156, color: '#4e73df' },
+                    { label: 'Kantin Minuman', count: 112, color: '#1cc88a' },
+                    { label: 'Kantin Snack', count: 89, color: '#36b9cc' },
+                    { label: 'Kantin Bakso', count: 67, color: '#f6c23e' },
+                    { label: 'Kantin Soto', count: 45, color: '#e74a3b' },
+                    { label: 'Kantin Mie', count: 34, color: '#858796' }
+                ]
+            },
+            
+            // Users data for different roles
+            users: {
+                admin: {
+                    name: "Admin Kantin",
+                    role: "admin",
+                    stats: {
+                        revenue: 12500000,
+                        orders: 24,
+                        customers: 156,
+                        menu: "38/42"
+                    }
+                },
+                kasir: {
+                    name: "Kasir Kantin",
+                    role: "kasir",
+                    stats: {
+                        revenue: 850000,
+                        orders: 18,
+                        customers: 24,
+                        menu: "42/42"
+                    }
+                },
+                pelanggan: {
+                    name: "Budi Santoso",
+                    role: "pelanggan",
+                    kelas: "X IPA 1",
+                    stats: {
+                        purchases: 8,
+                        favorite: "Kantin Utama",
+                        orders: 3,
+                        spending: 45000
+                    }
+                },
+                koki: {
+                    name: "Koki Kantin",
+                    role: "koki",
+                    stats: {
+                        orders: 12,
+                        pending: 4,
+                        completed: 8,
+                        rating: 4.8
+                    }
+                }
+            }
+        };
+
+        // ====================
+        // DOM ELEMENTS
+        // ====================
+        const elements = {
+            // User info
+            userInitial: document.getElementById('userInitial'),
+            userName: document.getElementById('userName'),
+            userRole: document.getElementById('userRole'),
+            dropdownUserName: document.getElementById('dropdownUserName'),
+            dropdownUserRole: document.getElementById('dropdownUserRole'),
+            
+            // Stats
+            revenueAmount: document.getElementById('revenueAmount'),
+            ordersCount: document.getElementById('ordersCount'),
+            customersCount: document.getElementById('customersCount'),
+            menuCount: document.getElementById('menuCount'),
+            
+            // Tabs
+            tabAdmin: document.getElementById('tabAdmin'),
+            tabKasir: document.getElementById('tabKasir'),
+            tabPelanggan: document.getElementById('tabPelanggan'),
+            tabKoki: document.getElementById('tabKoki'),
+            
+            // Charts
+            revenueChart: document.getElementById('revenueChart'),
+            warungChart: document.getElementById('warungChart'),
+            
+            // Tables
+            recentOrdersTable: document.getElementById('recentOrdersTable'),
+            lowStockItems: document.getElementById('lowStockItems'),
+            topSellingItems: document.getElementById('topSellingItems'),
+            warungList: document.getElementById('warungList'),
+            
+            // Modals
+            loginModal: document.getElementById('loginModal'),
+            reportModal: document.getElementById('reportModal'),
+            
+            // Buttons
+            notificationBtn: document.getElementById('notificationBtn'),
+            userMenuBtn: document.getElementById('userMenuBtn'),
+            refreshBtn: document.getElementById('refreshBtn'),
+            logoutBtn: document.getElementById('logoutBtn'),
+            closeReportModal: document.getElementById('closeReportModal'),
+            cancelReport: document.getElementById('cancelReport'),
+            generateReport: document.getElementById('generateReport'),
+            
+            // Forms
+            loginForm: document.getElementById('loginForm'),
+            showRegister: document.getElementById('showRegister'),
+            
+            // Toast
+            toast: document.getElementById('toast'),
+            toastMessage: document.getElementById('toastMessage'),
+            
+            // Date
+            currentDate: document.getElementById('currentDate')
+        };
+
+        // ====================
+        // CHART INSTANCES
+        // ====================
+        let revenueChartInstance = null;
+        let warungChartInstance = null;
+
+        // ====================
+        // INITIALIZATION
+        // ====================
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeApp();
+        });
+
+        function initializeApp() {
+            // Set current date
+            updateCurrentDate();
+            
+            // Load user data
+            loadUserData();
+            
+            // Initialize charts
+            initializeCharts();
+            
+            // Load dashboard data
+            loadDashboardData();
+            
+            // Set up event listeners
+            setupEventListeners();
+            
+            // Simulate loading animation
+            simulateLoading();
+        }
+
+        function updateCurrentDate() {
+            const now = new Date();
+            const options = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            };
+            elements.currentDate.textContent = now.toLocaleDateString('id-ID', options);
+        }
+
+        function loadUserData() {
+            const user = AppState.currentUser;
+            const initial = user.name.charAt(0).toUpperCase();
+            
+            elements.userInitial.textContent = initial;
+            elements.userName.textContent = user.name;
+            elements.userRole.textContent = user.role === 'admin' ? 'Administrator' : 
+                                           user.role === 'kasir' ? 'Kasir' :
+                                           user.role === 'pelanggan' ? 'Pelanggan' : 'Koki';
+            
+            elements.dropdownUserName.textContent = user.name;
+            elements.dropdownUserRole.textContent = elements.userRole.textContent;
+        }
+
+        function loadDashboardData() {
+            const data = AppState.dashboardData;
+            const user = AppState.currentUser;
+            const userData = AppState.users[user.role];
+            
+            // Update stats based on role
+            if (user.role === 'admin') {
+                elements.revenueAmount.textContent = formatCurrency(userData.stats.revenue);
+                elements.ordersCount.textContent = userData.stats.orders;
+                elements.customersCount.textContent = userData.stats.customers;
+                elements.menuCount.textContent = userData.stats.menu;
+            } else if (user.role === 'pelanggan') {
+                elements.revenueAmount.textContent = userData.stats.purchases + " item";
+                elements.ordersCount.textContent = userData.stats.orders;
+                elements.customersCount.textContent = userData.stats.favorite;
+                elements.menuCount.textContent = formatCurrency(userData.stats.spending);
+            }
+            
+            // Load recent orders
+            loadRecentOrders();
+            
+            // Load low stock items
+            loadLowStockItems();
+            
+            // Load top selling items
+            loadTopSellingItems();
+            
+            // Load warung distribution
+            loadWarungDistribution();
+        }
+
+        function loadRecentOrders() {
+            const orders = AppState.dashboardData.recentOrders;
+            const tableBody = elements.recentOrdersTable;
+            tableBody.innerHTML = '';
+            
+            orders.forEach(order => {
+                const statusColor = order.status === 'selesai' ? 'bg-green-100 text-green-600' :
+                                  order.status === 'diproses' ? 'bg-yellow-100 text-yellow-600' :
+                                  'bg-blue-100 text-blue-600';
+                
+                const statusText = order.status === 'selesai' ? 'Selesai' :
+                                 order.status === 'diproses' ? 'Diproses' : 'Pending';
+                
+                const row = document.createElement('tr');
+                row.className = 'border-b border-gray-100 hover:bg-gray-50 transition-colors';
+                row.innerHTML = `
+                    <td class="py-4">
+                        <span class="font-bold text-gray-900">#${order.id}</span>
+                    </td>
+                    <td class="py-4">
+                        <div class="flex items-center">
+                            <div class="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold mr-3">
+                                ${order.customer.charAt(0)}
+                            </div>
+                            <div>
+                                <p class="font-medium text-sm">${order.customer}</p>
+                                <p class="text-xs text-gray-500">${order.time}</p>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="py-4">
+                        <p class="font-medium">${order.menu}</p>
+                    </td>
+                    <td class="py-4">
+                        <span class="px-3 py-1 rounded-full text-xs font-medium ${statusColor}">
+                            ${statusText}
+                        </span>
+                    </td>
+                    <td class="py-4 text-right">
+                        <span class="font-bold">${formatCurrency(order.total)}</span>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        function loadLowStockItems() {
+            const items = AppState.dashboardData.lowStockItems;
+            const container = elements.lowStockItems;
+            container.innerHTML = '';
+            
+            items.forEach(item => {
+                const stockClass = item.stock === 0 ? 'bg-red-100 text-red-600' :
+                                 item.stock <= 2 ? 'bg-red-100 text-red-600' :
+                                 'bg-yellow-100 text-yellow-600';
+                
+                const stockText = item.stock === 0 ? 'Habis' : `${item.stock} stok`;
+                
+                const div = document.createElement('div');
+                div.className = 'bg-gray-50 rounded-xl p-4 hover:bg-gray-100 transition-colors';
+                div.innerHTML = `
+                    <div class="flex items-center">
+                        <div class="bg-yellow-100 text-yellow-600 p-3 rounded-lg mr-4">
+                            <i class="fas fa-hamburger"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="font-bold text-gray-900">${item.name}</h4>
+                            <p class="text-sm text-gray-500">${item.warung}</p>
+                        </div>
+                        <span class="px-3 py-1 rounded-full text-sm font-medium ${stockClass}">
+                            ${stockText}
+                        </span>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function loadTopSellingItems() {
+            const items = AppState.dashboardData.topSellingItems;
+            const container = elements.topSellingItems;
+            container.innerHTML = '';
+            
+            items.forEach((item, index) => {
+                const div = document.createElement('div');
+                div.className = 'border border-gray-200 rounded-xl p-4 text-center';
+                div.innerHTML = `
+                    <div class="w-10 h-10 rounded-full ${index === 0 ? 'bg-yellow-500' : index === 1 ? 'bg-gray-400' : 'bg-orange-500'} text-white flex items-center justify-center mx-auto mb-3 font-bold">
+                        ${index + 1}
+                    </div>
+                    <h4 class="font-bold text-gray-900 mb-1">${item.name}</h4>
+                    <p class="text-sm text-gray-500 mb-2">${item.warung}</p>
+                    <span class="inline-block bg-green-100 text-green-600 px-3 py-1 rounded-full text-sm">
+                        ${item.sold} terjual
+                    </span>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function loadWarungDistribution() {
+            const warungs = AppState.dashboardData.warungStats;
+            const container = elements.warungList;
+            container.innerHTML = '';
+            
+            // Calculate total
+            const total = warungs.reduce((sum, w) => sum + w.count, 0);
+            
+            warungs.forEach(warung => {
+                const percentage = total > 0 ? ((warung.count / total) * 100).toFixed(1) : 0;
+                
+                const div = document.createElement('div');
+                div.className = 'flex items-center p-3 rounded-lg hover:bg-gray-50 transition-colors';
+                div.innerHTML = `
+                    <div class="w-10 h-10 rounded-lg flex items-center justify-center mr-3" style="background-color: ${warung.color}20; color: ${warung.color};">
+                        <i class="fas fa-store"></i>
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="font-medium">${warung.label}</span>
+                            <span class="font-bold">${warung.count}</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div class="h-2 rounded-full" style="width: ${percentage}%; background-color: ${warung.color};"></div>
+                        </div>
+                        <div class="text-right mt-1">
+                            <span class="text-xs text-gray-500">${percentage}%</span>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function initializeCharts() {
+            // Destroy existing charts
+            if (revenueChartInstance) revenueChartInstance.destroy();
+            if (warungChartInstance) warungChartInstance.destroy();
+            
+            // Revenue Chart
+            const revenueCtx = elements.revenueChart.getContext('2d');
+            revenueChartInstance = new Chart(revenueCtx, {
+                type: 'line',
+                data: {
+                    labels: AppState.dashboardData.revenue.labels,
+                    datasets: [{
+                        label: 'Pendapatan',
+                        data: AppState.dashboardData.revenue.data,
+                        backgroundColor: 'rgba(67, 97, 238, 0.1)',
+                        borderColor: 'rgba(67, 97, 238, 1)',
+                        borderWidth: 3,
+                        pointRadius: 5,
+                        pointBackgroundColor: 'rgba(67, 97, 238, 1)',
+                        pointBorderColor: '#fff',
+                        pointHoverRadius: 7,
+                        pointHoverBackgroundColor: 'rgba(67, 97, 238, 1)',
+                        pointHoverBorderColor: '#fff',
+                        pointBorderWidth: 2,
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { drawBorder: false },
+                            ticks: {
+                                callback: function(value) {
+                                    return 'Rp ' + value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+                                }
+                            }
+                        },
+                        x: { grid: { display: false } }
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return 'Pendapatan: Rp ' + context.parsed.y.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Warung Chart
+            const warungCtx = elements.warungChart.getContext('2d');
+            warungChartInstance = new Chart(warungCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: AppState.dashboardData.warungDistribution.labels,
+                    datasets: [{
+                        data: AppState.dashboardData.warungDistribution.data,
+                        backgroundColor: AppState.dashboardData.warungDistribution.colors,
+                        borderWidth: 2,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '65%',
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.label}: ${context.parsed}%`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function setupEventListeners() {
+            // Role Tabs
+            [elements.tabAdmin, elements.tabKasir, elements.tabPelanggan, elements.tabKoki].forEach(tab => {
+                tab.addEventListener('click', function() {
+                    // Remove active class from all tabs
+                    document.querySelectorAll('.role-tab').forEach(t => {
+                        t.classList.remove('active', 'bg-blue-600', 'text-white');
+                        t.classList.add('text-gray-600');
+                    });
+                    
+                    // Add active class to clicked tab
+                    this.classList.add('active', 'bg-blue-600', 'text-white');
+                    this.classList.remove('text-gray-600');
+                    
+                    // Update user role
+                    const role = this.getAttribute('data-role');
+                    AppState.currentUser.role = role;
+                    
+                    // Update user data
+                    const userData = AppState.users[role];
+                    AppState.currentUser.name = userData.name;
+                    
+                    // Update UI
+                    loadUserData();
+                    loadDashboardData();
+                    
+                    // Show toast
+                    showToast(`Berhasil beralih ke mode ${role}`);
+                });
+            });
+            
+            // Notification dropdown
+            elements.notificationBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const dropdown = document.getElementById('notificationDropdown');
+                dropdown.classList.toggle('hidden');
+            });
+            
+            // User menu dropdown
+            elements.userMenuBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const dropdown = document.getElementById('userDropdown');
+                dropdown.classList.toggle('hidden');
+            });
+            
+            // Close dropdowns when clicking outside
+            document.addEventListener('click', function() {
+                document.getElementById('notificationDropdown').classList.add('hidden');
+                document.getElementById('userDropdown').classList.add('hidden');
+            });
+            
+            // Refresh button
+            elements.refreshBtn.addEventListener('click', function() {
+                const icon = this.querySelector('i');
+                icon.classList.add('loading-spinner');
+                
+                // Simulate loading
+                setTimeout(() => {
+                    icon.classList.remove('loading-spinner');
+                    loadDashboardData();
+                    initializeCharts();
+                    showToast('Dashboard berhasil diperbarui!');
+                }, 1000);
+            });
+            
+            // Logout button
+            elements.logoutBtn.addEventListener('click', function() {
+                if (confirm('Apakah Anda yakin ingin keluar?')) {
+                    showToast('Anda berhasil keluar dari sistem');
+                    setTimeout(() => {
+                        // Reset to admin role
+                        AppState.currentUser.role = 'admin';
+                        AppState.currentUser.name = 'Admin Kantin';
+                        loadUserData();
+                        loadDashboardData();
+                        
+                        // Reset tabs
+                        document.querySelectorAll('.role-tab').forEach(t => {
+                            t.classList.remove('active', 'bg-blue-600', 'text-white');
+                            t.classList.add('text-gray-600');
+                        });
+                        elements.tabAdmin.classList.add('active', 'bg-blue-600', 'text-white');
+                    }, 1000);
+                }
+            });
+            
+            // Report modal
+            document.querySelectorAll('.quick-action-btn').forEach((btn, index) => {
+                btn.addEventListener('click', function() {
+                    if (index === 2) { // Report button
+                        elements.reportModal.classList.remove('hidden');
+                    } else {
+                        showToast(`Fitur ${['Tambah Menu', 'Kelola Pesanan', 'Laporan', 'Pengguna'][index]} akan segera hadir!`);
+                    }
+                });
+            });
+            
+            elements.closeReportModal.addEventListener('click', closeReportModal);
+            elements.cancelReport.addEventListener('click', closeReportModal);
+            
+            elements.generateReport.addEventListener('click', function() {
+                showToast('Laporan sedang diproses...');
+                closeReportModal();
+                
+                // Simulate report generation
+                setTimeout(() => {
+                    showToast('Laporan berhasil di-generate dan siap diunduh!');
+                }, 2000);
+            });
+            
+            // Login form
+            elements.loginForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const username = document.getElementById('loginUsername').value;
+                const password = document.getElementById('loginPassword').value;
+                
+                if (username && password) {
+                    showToast('Login berhasil!');
+                    closeLoginModal();
+                } else {
+                    showToast('Harap isi semua field!', 'error');
+                }
+            });
+            
+            // Show register from login
+            elements.showRegister.addEventListener('click', function() {
+                showToast('Fitur pendaftaran akan segera hadir!');
+            });
+            
+            // Chart filter
+            document.getElementById('chartFilter').addEventListener('change', function() {
+                const value = this.value;
+                let labels = AppState.dashboardData.revenue.labels;
+                let data = AppState.dashboardData.revenue.data;
+                
+                if (value === '30days') {
+                    labels = Array.from({length: 30}, (_, i) => `Hari ${i + 1}`);
+                    data = Array.from({length: 30}, () => Math.floor(Math.random() * 3000000) + 1000000);
+                } else if (value === 'month') {
+                    labels = ['Minggu 1', 'Minggu 2', 'Minggu 3', 'Minggu 4'];
+                    data = [4500000, 5200000, 4800000, 5500000];
+                }
+                
+                // Update chart
+                revenueChartInstance.data.labels = labels;
+                revenueChartInstance.data.datasets[0].data = data;
+                revenueChartInstance.update();
+                
+                showToast(`Filter grafik diubah ke ${this.options[this.selectedIndex].text}`);
+            });
+        }
+
+        function closeReportModal() {
+            elements.reportModal.classList.add('hidden');
+        }
+
+        function closeLoginModal() {
+            elements.loginModal.classList.add('hidden');
+        }
+
+        function showToast(message, type = 'success') {
+            elements.toastMessage.textContent = message;
+            
+            // Set color based on type
+            if (type === 'error') {
+                elements.toast.className = elements.toast.className.replace('bg-green-500', 'bg-red-500');
+            } else if (type === 'warning') {
+                elements.toast.className = elements.toast.className.replace('bg-green-500', 'bg-yellow-500');
+            } else {
+                elements.toast.className = elements.toast.className.replace('bg-red-500', 'bg-green-500').replace('bg-yellow-500', 'bg-green-500');
+            }
+            
+            // Show toast
+            elements.toast.classList.remove('opacity-0', 'translate-y-10');
+            elements.toast.classList.add('opacity-100', 'translate-y-0');
+            
+            // Hide toast after 3 seconds
+            setTimeout(() => {
+                elements.toast.classList.remove('opacity-100', 'translate-y-0');
+                elements.toast.classList.add('opacity-0', 'translate-y-10');
+            }, 3000);
+        }
+
+        function formatCurrency(amount) {
+            if (typeof amount === 'string' && amount.includes('Rp')) return amount;
+            
+            if (amount >= 1000000) {
+                return 'Rp ' + (amount / 1000000).toFixed(1).replace('.', ',') + ' Jt';
+            } else if (amount >= 1000) {
+                return 'Rp ' + amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+            } else {
+                return 'Rp ' + amount;
+            }
+        }
+
+        function simulateLoading() {
+            // Add shimmer effect to stats cards
+            const statsCards = document.querySelectorAll('.stat-card, .bg-white');
+            statsCards.forEach(card => {
+                card.classList.add('shimmer');
+            });
+            
+            // Remove shimmer after 1 second
+            setTimeout(() => {
+                statsCards.forEach(card => {
+                    card.classList.remove('shimmer');
+                });
+            }, 1000);
+            
+            // Simulate notification count update
+            let count = 3;
+            const notificationCount = document.getElementById('notificationCount');
+            
+            setInterval(() => {
+                count = Math.min(Math.max(count + (Math.random() > 0.7 ? 1 : -1), 0), 5);
+                notificationCount.textContent = count;
+                notificationCount.classList.toggle('pulse-notification', count > 0);
+            }, 10000);
+        }
+
+        // Add some interactive features
+        document.querySelectorAll('.card-hover').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-5px)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+
+        // Auto-refresh data every 30 seconds
+        setInterval(() => {
+            // Randomly update some stats
+            const stats = AppState.dashboardData;
+            stats.revenue.data = stats.revenue.data.map(value => 
+                Math.max(1000000, value + Math.floor(Math.random() * 500000) - 250000)
+            );
+            
+            // Update chart
+            if (revenueChartInstance) {
+                revenueChartInstance.data.datasets[0].data = stats.revenue.data;
+                revenueChartInstance.update('none');
+            }
+            
+            // Update notification count
+            const notificationCount = document.getElementById('notificationCount');
+            const currentCount = parseInt(notificationCount.textContent);
+            if (Math.random() > 0.7 && currentCount < 5) {
+                notificationCount.textContent = currentCount + 1;
+            }
+        }, 30000);
+    </script>
+</body>
+</html>
