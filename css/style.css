@@ -127,6 +127,11 @@
     border-left-color: #F59E0B;
 }
 
+/* Utility */
+.hidden {
+    display: none !important;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
     .main-content {
@@ -144,4 +149,5 @@
     .sidebar.open {
         transform: translateX(0);
     }
+    
 }
