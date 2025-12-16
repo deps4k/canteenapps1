@@ -1,146 +1,77 @@
 <!DOCTYPE html>
-==========
 <html lang="id" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CanteenApps - Sistem Kantin Digital Sekolah</title>
-    
+
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="assets/Ca.jpg">
-    
+
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    
+
     <!-- Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Charts.js -->
+
+    <!-- Tailwind & Chart -->
+    <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <script src="https://cdn.tailwindcss.com"></script>
-
-    
     <!-- Custom CSS -->
     <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/components.css"> 
+    <link rel="stylesheet" href="css/components.css">
     <link rel="stylesheet" href="css/charts.css">
-    
-    <!-- Custom Tailwind Config -->
+
+    <!-- Tailwind Config -->
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
                         primary: '#3B82F6',
-                        'primary-dark': '#1D4ED8',
                         secondary: '#10B981',
                         accent: '#8B5CF6',
-                        warning: '#F59E0B',
-                        danger: '#EF4444',
-                        success: '#10B981',
-                        info: '#06B6D4',
-                        light: '#F9FAFB',
                         dark: '#111827'
-                    },
-                    fontFamily: {
-                        'sans': ['Inter', 'system-ui', 'sans-serif'],
-                        'display': ['Poppins', 'Inter', 'sans-serif']
-                    },
-                    animation: {
-                        'float': 'float 6s ease-in-out infinite',
-                        'shimmer': 'shimmer 2s infinite linear',
-                        'slide-in': 'slideIn 0.3s ease-out',
-                        'fade-in': 'fadeIn 0.5s ease-out'
-                    },
-                    keyframes: {
-                        float: {
-                            '0%, 100%': { transform: 'translateY(0)' },
-                            '50%': { transform: 'translateY(-10px)' }
-                        },
-                        shimmer: {
-                            '0%': { backgroundPosition: '-200% 0' },
-                            '100%': { backgroundPosition: '200% 0' }
-                        },
-                        slideIn: {
-                            'from': { opacity: 0, transform: 'translateY(20px)' },
-                            'to': { opacity: 1, transform: 'translateY(0)' }
-                        },
-                        fadeIn: {
-                            'from': { opacity: 0 },
-                            'to': { opacity: 1 }
-                        }
                     }
                 }
             }
         }
     </script>
 </head>
+
 <body class="bg-gray-50 text-gray-900 font-sans">
-    <!-- Loading Screen -->
-   <!--  <div id="loadingScreen" class="fixed inset-0 bg-white z-50 flex items-center justify-center">
-       <div class="text-center">
-           <div class="w-24 h-24 mx-auto mb-6 relative">
-               <div class="absolute inset-0 bg-gradient-to-r from-primary to-accent rounded-2xl animate-ping opacity-20"></div>
-               <div class="absolute inset-4 bg-gradient-to-r from-primary to-accent rounded-xl flex items-center justify-center">
-                   <img src="assets/Ca.jpg" alt="Logo CanteenApps" class="w-12 h-12 rounded-lg">
-               </div>
-           </div>
-           <h2 class="text-2xl font-bold text-gray-800 mb-2">CanteenApps</h2>
-           <p class="text-gray-600">Memuat sistem kantin digital...</p>
-           <div class="mt-6 w-48 h-1 bg-gray-200 rounded-full overflow-hidden mx-auto">
-               <div class="h-full bg-gradient-to-r from-primary to-accent rounded-full animate-shimmer"></div>
-           </div>
-       </div>
-   </div> -->
 
-    <!-- App Container -->
-    <div id="appContainer" class="min-h-screen">
-        <!-- Sidebar -->
-        <div id="sidebarContainer"></div>
+<!-- APP -->
+<div id="appContainer" class="min-h-screen flex">
 
-        <!-- Main Content -->
-        <div class="main-content">
-            <!-- Navbar -->
-            <div id="navbarContainer"></div>
+    <!-- Sidebar -->
+    <div id="sidebarContainer"></div>
 
-            <!-- Page Content -->
-            <main class="page-content">
-                <!-- Dashboard Page -->
-                <div id="dashboardPage" class="page active">
-                    <!-- Content will be loaded from includes/dashboard.html -->
-                </div>
-                
-                <!-- Menu Page -->
-                <div id="menuPage" class="page hidden">
-                    <!-- Content will be loaded from includes/menu.html -->
-                </div>
-                
-                <!-- Pesanan Page -->
-                <div id="pesananPage" class="page hidden">
-                    <!-- Content will be loaded from includes/pesanan.html -->
-                </div>
-                
-                <!-- Struk Page -->
-                <div id="strukPage" class="page hidden">
-                    <!-- Content will be loaded from includes/struk.html -->
-                </div>
-            </main>
+    <!-- Main -->
+    <div class="flex-1">
+        <div id="navbarContainer"></div>
 
-            <!-- Footer -->
-            <div id="footerContainer"></div>
-        </div>
+        <main class="page-content p-4">
+            <div id="dashboardPage" class="page active"></div>
+            <div id="menuPage" class="page hidden"></div>
+            <div id="pesananPage" class="page hidden"></div>
+            <div id="strukPage" class="page hidden"></div>
+        </main>
+
+        <div id="footerContainer"></div>
     </div>
+</div>
 
-    <!-- Toast Container -->
-    <div id="toastContainer" class="fixed top-4 right-4 z-50 space-y-4"></div>
+<!-- Toast -->
+<div id="toastContainer" class="fixed top-4 right-4 z-50"></div>
 
-    <!-- JavaScript -->
-    <script src="js/utils.js"></script>
-    <script src="js/app.js"></script>
-    <script src="js/charts.js"></script>
+<!-- JS -->
+<script src="js/utils.js"></script>
+<script src="js/app.js"></script>
+<script src="js/charts.js"></script>
+
 </body>
 </html>
-=======
