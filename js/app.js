@@ -42,12 +42,19 @@ class CanteenApp {
             // Load initial data
             this.loadDashboardData();
             
+            console.log('loadingScreen:', document.getElementById('loadingScreen'));
+console.log('appContainer:', document.getElementById('appContainer'));
+
             // Hide loading screen
             setTimeout(() => {
-                document.getElementById('loadingScreen').style.display = 'none';
-                document.getElementById('appContainer').classList.remove('hidden');
-                Utils.showToast('CanteenApps berhasil dimuat!', 'success');
-            }, 1000);
+    const loading = document.getElementById('loadingScreen');
+    const app = document.getElementById('appContainer');
+
+    if (loading) loading.style.display = 'none';
+    if (app) app.classList.remove('hidden');
+
+    Utils.showToast('CanteenApps berhasil dimuat!', 'success');
+}, 500);
             
         } catch (error) {
             console.error('Error initializing app:', error);
